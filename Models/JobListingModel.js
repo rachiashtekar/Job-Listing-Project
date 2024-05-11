@@ -39,6 +39,7 @@ const jobListingSchema = new Schema({
     type: [String],
     required: [true, "Skills required is required"],
   },
+
   createdAt: { type: Date, default: Date.now },
 });
 

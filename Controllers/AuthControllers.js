@@ -6,6 +6,7 @@ const registerController = async (req, res) => {
     // console.log(req.body)
     const { name, email, password, phone} = req.body;
     //validations
+   
    if (!name) {
       return res.send({ error: "Name is Required" });
     }
@@ -37,6 +38,7 @@ const registerController = async (req, res) => {
       email,
       phone,
       password: hashedPassword,
+    
     }).save();
       console.log(user)
     res.status(201).send({
@@ -53,6 +55,9 @@ const registerController = async (req, res) => {
     });
   }
 };
+
+
+
 
 // //POST LOGIN
 const loginController = async (req, res) => {
@@ -82,7 +87,7 @@ const loginController = async (req, res) => {
     }
     //token
     const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
+      expiresIn: "100d",
     });
     res.status(200).send({
       success: true,

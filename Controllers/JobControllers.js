@@ -176,4 +176,7 @@ const DeleteJob = async (req, res) => {
   }
 };
 
+
+
+
 module.exports = { addJob, updateJob, getAllJobs, getOneJob,DeleteJob };
