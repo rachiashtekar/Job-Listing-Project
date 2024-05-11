@@ -50,6 +50,7 @@ const AuthRoute = require('./Routes/AuthRoute');
 const jobRoute = require('./Routes/jobRoute');
 const profileRoute = require('./Routes/profileRoute');
 const cors = require('cors');
+const { getUserJobs } = require('./Controllers/ProfileControllers');
 
 const app = express();
 
@@ -64,7 +65,8 @@ app.use(cors());
 app.use("/api/v1/auth", AuthRoute);
 app.use("/api/v1/job", jobRoute);
 // app.use('/api/v1/user/profile', profileRoute);
-app.use('/api/v1/auth/profile', profileRoute); // Corrected route mounting
+app.use('/api/v1/auth/profile', profileRoute);
+app.use('/api/v1/auth/user',getUserJobs) // Corrected route mounting
 
 // Define a test route
 app.get('/', (req, res) => {

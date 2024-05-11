@@ -1,4 +1,5 @@
 const JobListing = require("../Models/JobListingModel");
+const jwt = require("jsonwebtoken");
 
 const addJob = async (req, res) => {
   try {
@@ -11,8 +12,12 @@ const addJob = async (req, res) => {
       jobLocation,
       jobDescription,
       aboutCompany,
-      skillsRequired,
+      skillsRequired
+      
     } = req.body;
+
+    const token = req.headers.authorization;
+    const userId = jwt.verify(token, process.env.JWT_SECRET);
 
     // Check if all the required fields are provided
     if (
@@ -23,7 +28,8 @@ const addJob = async (req, res) => {
       !aboutCompany ||
       !monthlySalary ||
       !jobType ||
-      !remoteOnsite
+      !remoteOnsite||
+      !userId
     ) {
       return res
         .status(400)
@@ -44,6 +50,7 @@ const addJob = async (req, res) => {
       jobDescription,
       aboutCompany,
       skillsRequired,
+      userId
     });
 
     await newJobListing.save();
@@ -176,7 +183,24 @@ const DeleteJob = async (req, res) => {
   }
 };
 
+const getUserJobs = async (req, res) => {
+  try {
+    const userId = req.headers.authorization;
+    const { skills, searchTerm } = req.query;
+
+    const filter = {};
+    if (skills) filter.skillsRequired = { $in: skills.split(",") };
+    if (searchTerm) filter.jobPosition = new RegExp(searchTerm, "i");
+    filter.userId = userId; // Add userId filter
+
+    // Find job listings that match the filter
+    const jobListings = await JobListing.find(filter);
+
+    res.status(200).json({ jobListings });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 
-
-module.exports = { addJob, updateJob, getAllJobs, getOneJob,DeleteJob };
+module.exports = { addJob, updateJob, getAllJobs, getOneJob,DeleteJob,getUserJobs };
